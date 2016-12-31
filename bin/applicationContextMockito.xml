@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p" 
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	   						http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       						http://www.springframework.org/schema/context 
+       						http://www.springframework.org/schema/context/spring-context.xsd
+       						http://www.springframework.org/schema/aop   
+    						http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+    						http://www.springframework.org/schema/tx 
+    						http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	default-lazy-init="true">
+	
+	
+	
+	<context:property-placeholder/>
+	<context:annotation-config />
+	<aop:aspectj-autoproxy proxy-target-class="true" />
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<!-- Activates scanning of @Services and @Repository -->
+	<context:component-scan base-package="com.aspireiten">
+   		<context:include-filter type="regex" expression="(business|enterprise|domain)\..*"/>
+	</context:component-scan>
+
+	<bean id="sessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="packagesToScan">
+			<value>com.aspireiten.model</value>
+		</property>
+		<property name="configLocation">
+			<value>hibernate.cfg.mockito.xml</value>
+		</property>
+		<property name="configurationClass">
+			<value>org.hibernate.cfg.AnnotationConfiguration</value>
+		</property>
+	</bean>
+	
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="sessionFactory" />
+	</bean>
+
+
+
+	<bean id="hibernateTemplate" class="org.springframework.orm.hibernate3.HibernateTemplate">
+		<property name="sessionFactory" ref="sessionFactory"></property>
+	</bean>
+	
+	<bean id="applicationProperties"
+      class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="ignoreResourceNotFound" value="false" />
+      <property name="ignoreUnresolvablePlaceholders" value="true" />
+      <property name="searchSystemEnvironment" value="true" />
+   </bean>
+   
+	<bean id="configurationLoader"
+		class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader" />
+
+	<!-- Bean Validator bean entry -->
+	<bean id="beanValidator" class="org.springmodules.validation.bean.BeanValidator"
+		p:configurationLoader-ref="configurationLoader">
+	</bean>
+	<!-- Bean Validator bean entry ends -->
+
+	<!-- Mail Sender Bean -->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>${app-mail-host}</value>
+		</property>
+		<property name="username">
+			<value>${app-mail-username}</value>
+		</property>
+		<property name="password">
+			<value>${app-mail-password}</value>
+		</property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+				<prop key="mail.smtp.starttls.enable">true</prop>
+				<prop key="mail.smtp.socketFactory.fallback">true</prop>
+				<prop key="mail.smtp.port">587</prop>
+			</props>
+		</property> 
+	</bean>
+	
+	<bean id="appCounter" class="com.aspireiten.util.AppCounter" init-method="init" destroy-method="destroy"></bean>
+
+
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="31457280" />
+	</bean>
+</beans>	
