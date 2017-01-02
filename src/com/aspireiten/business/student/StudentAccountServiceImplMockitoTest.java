@@ -60,6 +60,6 @@ public class StudentAccountServiceImplMockitoTest {
         Mockito.doNothing().when(studentAccountDaoIF).registerStudent(Mockito.any(StudentRegisterationReqDTO.class));
         StudentRegisterationRespDTO studentRegisterationRespDTO = studentAccountServiceIF
                 .registerStudent(studentRegisterationReqDTO);
-        Assert.assertNull(studentRegisterationRespDTO);
+        Assert.assertNotNull(studentRegisterationRespDTO);
     }
 }
