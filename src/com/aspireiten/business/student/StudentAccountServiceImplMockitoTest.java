@@ -18,7 +18,7 @@ import com.aspireiten.business.student.dto.StudentRegisterationRespDTO;
 import com.aspireiten.enterprise.common.RoleDaoIF;
 import com.aspireiten.enterprise.student.StudentAccountDaoIF;
 import com.aspireiten.model.common.Role;
-
+//Unit Test Code for Merge Branch test
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration("classpath:applicationContextMockito.xml")
 public class StudentAccountServiceImplMockitoTest {
